@@ -1,3 +1,2 @@
-* Embedded audio player for posts
-* Extend the feed with enclosures
+* Enclosures are missing the 'length' attribute
 * Extend the admin panel with podcast feed settings

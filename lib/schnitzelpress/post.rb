@@ -119,6 +119,15 @@ module Schnitzelpress
       body_html
     end
 
+    def enclosures
+      @@enclosures ||= Redcarpet::Markdown.new(EnclosureRenderer)
+
+      @@enclosures.renderer.reset
+      @@enclosures.render(body.to_s)
+
+      return @@enclosures.renderer.enclosures
+    end
+
     def render
       @@markdown ||= Redcarpet::Markdown.new(MarkdownRenderer,
         :autolink => true, :space_after_headers => true, :fenced_code_blocks => true)

@@ -1,4 +1,26 @@
 module Schnitzelpress
+  class EnclosureRenderer < Redcarpet::Render::HTML
+    attr_reader :enclosures
+
+    def initialize
+      super()
+      self.reset
+    end
+
+    def image(link, title, alt_text)
+      if link.match(/m4a$|mp3$/)
+      then
+        @enclosures.push(link)
+      end
+
+      return ''
+    end
+
+    def reset
+      @enclosures = []
+    end
+  end
+
   class MarkdownRenderer < Redcarpet::Render::HTML
     include Redcarpet::Render::SmartyPants
 

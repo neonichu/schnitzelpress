@@ -21,3 +21,5 @@
       %content{:type => 'html'}
         :cdata
           #{post.to_html}
+      - post.enclosures.each do |enc|
+        %link{:rel => 'enclosure', :type => 'audio/mpeg', :href => enc}
