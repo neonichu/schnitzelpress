@@ -1,13 +1,29 @@
 !!! XML
-%feed{:xmlns => 'http://www.w3.org/2005/Atom'}
+%feed{:xmlns => 'http://www.w3.org/2005/Atom',
+    'xmlns:itunes' => 'http://www.itunes.com/dtds/podcast-1.0.dtd'}
   %title= config.blog_title
+  %subtitle{:type => 'text'}= config.blog_description
+  %logo= config.podcast_logo
   %link{:href => url_for('/', :absolute => true)}
+  %link{:rel => 'self', :type => 'application/atom+xml',
+    :href => url_for(config.blog_feed_url, :absolute => true)}
   %id= base_url
   - if @posts.any?
     %updated= @posts.first.published_at
+    %pubDate= @posts.first.published_at
 
   %author
     %name= config.author_name
+
+  %itunes:author= config.author_name
+  %itunes:category{:text => config.podcast_category}
+    %itunes:category{:text => config.podcast_subcategory}
+  %itunes:explicit= 'no'
+  %itunes:image{:href => config.podcast_logo}
+  %itunes:keywords= config.podcast_keywords
+  %itunes:owner= config.podcast_owner
+  %itunes:subtitle= config.blog_description
+  %itunes:summary= config.blog_description
 
   - @posts.each do |post|
     %entry

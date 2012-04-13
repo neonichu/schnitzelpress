@@ -10,6 +10,13 @@
     %h2 Author
     = form_field config, :author_name
 
+    %h2 Podcast
+    = form_field config, :podcast_category
+    = form_field config, :podcast_subcategory
+    = form_field config, :podcast_logo
+    = form_field config, :podcast_owner
+    = form_field config, :podcast_keywords
+
     %h2 External Services
     = form_field config, :blog_feed_url, :label => "ATOM Feed URL", :hint => "This is what the /feed URL will redirect to. You can change this to eg. your FeedBurner URL."
     .row

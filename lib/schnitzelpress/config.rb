@@ -17,9 +17,15 @@ module Schnitzelpress
     field :gauges_id, :type => String
     field :twitter_id, :type => String
 
+    field :podcast_category, :type => String
+    field :podcast_subcategory, :type => String
+    field :podcast_logo, :type => String
+    field :podcast_owner, :type => String, :default => "joe@schnitzelpress.org"
+    field :podcast_keywords, :type => String
+
     field :cache_timestamp, :type => DateTime
 
-    validates :blog_title, :author_name, :presence => true
+    validates :blog_title, :author_name, :podcast_owner, :presence => true
 
     class << self
       def instance
