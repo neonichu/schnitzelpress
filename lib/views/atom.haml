@@ -1,6 +1,7 @@
 !!! XML
 %feed{:xmlns => 'http://www.w3.org/2005/Atom',
-    'xmlns:itunes' => 'http://www.itunes.com/dtds/podcast-1.0.dtd'}
+    'xmlns:itunes' => 'http://www.itunes.com/dtds/podcast-1.0.dtd',
+    'xml:lang' => 'en-US'}
   %title= config.blog_title
   %subtitle{:type => 'text'}= config.blog_description
   %logo= config.podcast_logo
@@ -10,7 +11,6 @@
   %id= base_url
   - if @posts.any?
     %updated= @posts.first.published_at
-    %pubDate= @posts.first.published_at
 
   %author
     %name= config.author_name
@@ -21,7 +21,9 @@
   %itunes:explicit= 'no'
   %itunes:image{:href => config.podcast_logo}
   %itunes:keywords= config.podcast_keywords
-  %itunes:owner= config.podcast_owner
+  %itunes:owner
+    %itunes:name= config.author_name
+    %itunes:email= config.podcast_owner
   %itunes:subtitle= config.blog_description
   %itunes:summary= config.blog_description
 
@@ -36,6 +38,7 @@
         %name= config.author_name
       %content{:type => 'html'}
         :cdata
-          #{post.to_html}
+          #{post.to_html.gsub(' controls="controls"', '')}
       - post.enclosures.each do |enc|
         %link{:rel => 'enclosure', :type => 'audio/mpeg', :href => enc}
+
