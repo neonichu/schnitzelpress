@@ -1,3 +1,5 @@
+* Support RSS
+
 * Enclosures are missing the 'length' attribute
 * Entries should have a itunes:duration
 
