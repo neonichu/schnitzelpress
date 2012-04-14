@@ -44,6 +44,14 @@ module Schnitzelpress
           haml :atom, :format => :xhtml, :layout => false
         end
 
+        get '/feed.rss' do
+          cache_control :public, :must_revalidate, :s_maxage => 2, :max_age => 3.minutes.to_i
+
+          @posts = Post.latest.limit(10)
+          content_type 'text/xml; charset=utf-8'
+          haml :rss, :format => :xhtml, :layout => false
+        end
+
         get '/feed/?' do
           redirect config.blog_feed_url, 307
         end
