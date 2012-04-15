@@ -1,0 +1,93 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+
+gem 'nokogiri', '~> 1.4'
+require 'nokogiri'
+
+require 'open-uri'
+require 'schnitzelpress'
+
+#####
+# TODO: Base URL should be configurable
+BASE_URL = 'http://episodes.appsacker.net/%s'
+#####
+
+ARGV[0] || raise('Missing argument')
+File.exists?(ARGV[0]) || raise(ARGV[0] + ': No such file or directory')
+
+mp3 = File.dirname(ARGV[0]) + '/' + File.basename(ARGV[0], '.md') + '.mp3'
+File.exists?(mp3) || raise(mp3 + ': No such file or directory')
+
+def get_var(line)
+	line.slice!(0, line.index(':') + 2)
+	line.slice!(-1)
+	return line
+end
+
+puts 'Parsing markdown...'
+
+$body = nil
+File.foreach(ARGV[0]) do |line|
+	$title = get_var(line) if line.match(/^Title: /)
+	$pubDate = get_var(line) if line.match(/^Published At: /)
+	$appId = get_var(line) if line.match(/^App ID: /)
+
+	$body += line if $body
+	$body = '' if !$body and line.match(/^$/)
+end
+
+puts 'Fetching iTunes info...'
+
+doc = Nokogiri::HTML(open('http://itunes.apple.com/de/app/id%s' % $appId))
+
+doc.xpath('//a').each do |link|
+	if link['href'].match(/#{$appId}/)
+	then
+		$url = link['href']
+		$icon = link.to_s[/src="([^&]+?)"/, 1]
+		break if $icon
+	end
+end
+
+doc.xpath('//img').each do |img|
+	if img.to_s.match(/Screenshot/)
+	then
+		$screenshot = img['src']
+		break
+	end
+end
+
+puts 'Posting to blog...'
+
+Schnitzelpress::init!
+
+episode_url = BASE_URL % File.basename(mp3)
+
+Schnitzelpress::Post::create(
+	:title => $title,
+	:body => '[![App Icon](%s)](%s)' % [$icon, $url] + "\n\n" +
+		$body + "\n\n" + '![%s](%s)' %  [$title, episode_url] + " " +
+		'[Download Episode](%s)' % episode_url + "\n\n" +
+		'![Screenshot](%s)' % $screenshot,
+	:published_at => $pubDate,
+	:read_more => nil,
+	:status => :draft, #:published,
+	:link => nil,
+	:disqus => false
+	)
+
+puts 'Setting ID3 tags...'
+
+album = Schnitzelpress::Config.instance.blog_title
+artist = Schnitzelpress::Config.instance.author_name
+$title = $title.gsub('\'', '')
+track = File.basename(mp3).split('-')[1].slice(0, 4).to_i
+year = $pubDate.slice(0, 4)
+
+id3_out = %x[eyeD3 --title='#{$title}' --year=#{year} \
+	--genre=101 --track=#{track} --remove-comments --remove-lyrics \
+	--album='#{album}' --artist='#{artist}' '#{mp3}']
+#puts id3_out
+
+# TODO: Publish file automatically
