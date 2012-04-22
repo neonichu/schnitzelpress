@@ -34,7 +34,7 @@ module Schnitzelpress
     rescue OEmbed::NotFound
       if link.match(/m4a$|mp3$/)
       then
-        %q(<audio controls="controls"><source type="audio/mp3" src="%s" /></audio>) % [link]
+        %q(<div class="audio"><audio controls="controls"><source type="audio/mp3" src="%s" /></audio></div>) % [link]
       else
         %q(<img src="%s" title="%s" alt="%s"/>) % [link, escape_html(title), escape_html(alt_text)]
       end
