@@ -11,6 +11,8 @@ require 'schnitzelpress'
 #####
 # TODO: Base URL should be configurable
 BASE_URL = 'http://episodes.appsacker.net/%s'
+# TODO: Affiliate link should be configurable
+AFF_LINK = 'http://clkde.tradedoubler.com/click?p=23761&a=2105316&url=%s&partnerId=2003'
 #####
 
 ARGV[0] || raise('Missing argument')
@@ -58,6 +60,11 @@ doc.xpath('//img').each do |img|
 	end
 end
 
+if AFF_LINK
+then
+	$url = AFF_LINK % [$url]
+end
+
 puts 'Posting to blog...'
 
 Schnitzelpress::init!
@@ -66,8 +73,10 @@ episode_url = BASE_URL % File.basename(mp3)
 
 Schnitzelpress::Post::create(
 	:title => $title,
-	:body => '[![App Icon](%s)](%s)' % [$icon, $url] + "\n\n" +
-		$body + "\n\n" + '![%s](%s)' %  [$title, episode_url] + " " +
+	:body => '<span class="mask"></span>' + "\n" +
+		'[![App Icon](%s)](%s)' % [$icon, $url] + "\n\n" +
+		$body + "\n\n" + '[99]: %s' % [$url] + "\n\n" +
+		'![%s](%s)' %  [$title, episode_url] + "\n\n" +
 		'[Download Episode](%s)' % episode_url + "\n\n" +
 		'![Screenshot](%s)' % $screenshot,
 	:published_at => $pubDate,
