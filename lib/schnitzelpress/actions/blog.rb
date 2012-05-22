@@ -39,7 +39,7 @@ module Schnitzelpress
         get '/blog.atom' do
           cache_control :public, :must_revalidate, :s_maxage => 2, :max_age => 3.minutes.to_i
 
-          @posts = Post.latest.limit(10)
+          @posts = Post.latest.limit(1000)
           content_type 'application/atom+xml; charset=utf-8'
           haml :atom, :format => :xhtml, :layout => false
         end
@@ -47,7 +47,7 @@ module Schnitzelpress
         get '/feed.rss' do
           cache_control :public, :must_revalidate, :s_maxage => 2, :max_age => 3.minutes.to_i
 
-          @posts = Post.latest.limit(10)
+          @posts = Post.latest.limit(1000)
           content_type 'text/xml; charset=utf-8'
           haml :rss, :format => :xhtml, :layout => false
         end

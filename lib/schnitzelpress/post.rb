@@ -111,10 +111,10 @@ module Schnitzelpress
     end
 
     def to_html
-      if body_html.nil?
+      #if body_html.nil?
         update_body_html
         save
-      end
+      #end
 
       body_html
     end
