@@ -10,7 +10,8 @@ require 'schnitzelpress'
 
 #####
 # TODO: Base URL should be configurable
-BASE_URL = 'http://episodes.appsacker.net/%s'
+#BASE_URL = 'http://episodes.appsacker.net/%s'
+BASE_URL = 'http://media.blubrry.com/appsacker/episodes.appsacker.net/%s'
 # TODO: Affiliate link should be configurable
 AFF_LINK = 'http://clkde.tradedoubler.com/click?p=23761&a=2105316&url=%s&partnerId=2003'
 #####
